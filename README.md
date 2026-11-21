@@ -113,6 +113,9 @@ La IA generó el código a partir de mis prompts y mis skills, pero las decision
 reglas que debía seguir, la revisión de cada cambio en el navegador y los ajustes posteriores. Cada archivo tiene
 comentarios que explican **por qué** se hizo así, y puedo explicar cada parte del CRUD con mis palabras.
 
-## Autor
+## Autora
 
-Juan Camacho ([JuanJo24S](https://github.com/JuanJo24S))
+[Dhanna-Yeraldine](https://github.com/Dhanna-Yeraldine)
+
+Skills de desarrollo usadas: [claude-develop-skills](https://github.com/JuanJo24S/claude-develop-skills), de Juan
+Camacho (JuanJo24S).
