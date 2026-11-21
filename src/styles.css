@@ -1,0 +1,535 @@
+/* ============================================================
+   Mi Biblioteca: estilos
+   Orden: tokens → reset → layout → formulario → lista → feedback
+   ============================================================ */
+
+/* ---------- Tokens de diseño ---------- */
+:root {
+  --color-bg: #f6f1e9;
+  --color-surface: #fffdf9;
+  --color-text: #2b2118;
+  --color-muted: #6b5d50;
+  --color-border: #d9cfc2;
+  --color-primary: #7a3e1d;
+  --color-primary-hover: #5f2f15;
+  --color-primary-soft: #f3e4d8;
+  --color-focus: #c26a2e;
+  --color-danger: #b3261e;
+  --color-danger-soft: #fbe9e7;
+  --color-star: #d99a00;
+
+  --status-to-read: #49627a;
+  --status-reading: #8a5a00;
+  --status-finished: #2f6b3a;
+
+  --radius: 14px;
+  --radius-small: 10px;
+  --shadow: 0 1px 2px rgb(43 33 24 / 0.06), 0 4px 16px rgb(43 33 24 / 0.06);
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+
+  --field-height: 3.5rem; /* 56px: cómodo para tocar en el celular */
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-title: Georgia, "Times New Roman", serif;
+}
+
+/* ---------- Reset (skill responsive) ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+img, video, svg { max-width: 100%; height: auto; }
+p, h1, h2, h3, li { overflow-wrap: break-word; }
+body, h1, h2, h3, p, ul, fieldset { margin: 0; }
+ul { padding: 0; list-style: none; }
+fieldset { border: 0; padding: 0; min-width: 0; }
+button, input, select { font: inherit; color: inherit; }
+
+body {
+  min-height: 100vh;
+  min-height: 100svh;
+  font-family: var(--font);
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--color-text);
+  background: var(--color-bg);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+[hidden] { display: none !important; }
+
+/* ---------- Layout ---------- */
+.container {
+  width: 100%;
+  max-width: 72rem;
+  margin-inline: auto;
+  padding-inline: max(var(--space-4), env(safe-area-inset-left));
+}
+
+.app-header {
+  padding-block: var(--space-6) var(--space-5);
+}
+
+.app-title {
+  font-family: var(--font-title);
+  font-size: clamp(1.75rem, 1.2rem + 2vw, 2.5rem);
+  line-height: 1.2;
+}
+
+.app-subtitle {
+  color: var(--color-muted);
+  max-width: 60ch;
+}
+
+/* Una columna en el celular; formulario y lista lado a lado cuando hay espacio */
+.layout {
+  display: grid;
+  gap: var(--space-5);
+  padding-bottom: var(--space-6);
+}
+
+@media (min-width: 56rem) {
+  .layout {
+    grid-template-columns: minmax(0, 22rem) minmax(0, 1fr);
+    align-items: start;
+  }
+  .form-panel {
+    position: sticky;
+    top: var(--space-4);
+  }
+}
+
+.panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: var(--space-5);
+}
+
+.panel-title {
+  font-family: var(--font-title);
+  font-size: 1.35rem;
+  margin-bottom: var(--space-4);
+}
+
+/* ---------- Campos con etiqueta flotante (skill forms) ---------- */
+.field {
+  position: relative;
+  margin-bottom: var(--space-4);
+}
+
+.field-input {
+  width: 100%;
+  min-height: var(--field-height);
+  padding: 1.4rem var(--space-4) 0.4rem;
+  font-size: 1rem; /* 16px o más: iOS no hace zoom al enfocar */
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-small);
+  transition: border-color 0.15s;
+}
+
+.field-input:hover { border-color: var(--color-muted); }
+
+.field-input:focus {
+  outline: none;
+  border-color: var(--color-focus);
+  box-shadow: 0 0 0 3px rgb(194 106 46 / 0.25);
+}
+
+.field-select {
+  appearance: none;
+  cursor: pointer;
+  padding-right: 2.5rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%236b5d50' stroke-width='2'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--space-4) center;
+}
+
+.field-label {
+  position: absolute;
+  left: var(--space-4);
+  top: calc(var(--field-height) / 2);
+  transform: translateY(-50%);
+  color: var(--color-muted);
+  pointer-events: none;
+  transition: top 0.15s, font-size 0.15s;
+}
+
+/* La etiqueta sube cuando el campo tiene foco o ya tiene texto */
+.field-input:focus + .field-label,
+.field-input:not(:placeholder-shown) + .field-label,
+.field-label--floated {
+  top: 0.85rem;
+  font-size: 0.75rem; /* 12px, el mínimo legible */
+  font-weight: 600;
+}
+
+.field-input:focus + .field-label { color: var(--color-focus); }
+
+.field-input[aria-invalid="true"] { border-color: var(--color-danger); }
+.field-input[aria-invalid="true"] + .field-label { color: var(--color-danger); }
+
+.field-error {
+  margin-top: var(--space-1);
+  color: var(--color-danger);
+  font-size: 0.875rem;
+}
+
+.field-error::before { content: "⚠ "; } /* no depender solo del color */
+
+.field-help {
+  margin-top: var(--space-1);
+  color: var(--color-muted);
+  font-size: 0.875rem;
+}
+
+.field-group { margin-bottom: var(--space-4); }
+
+.group-legend {
+  font-weight: 600;
+  margin-bottom: var(--space-2);
+}
+
+.optional {
+  font-weight: 400;
+  color: var(--color-muted);
+}
+
+/* ---------- Control segmentado del estado ---------- */
+.segmented {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-small);
+  overflow: hidden;
+}
+
+.segmented input,
+.chips input,
+.stars input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.segmented label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem; /* 44px */
+  padding-inline: var(--space-2);
+  text-align: center;
+  font-size: 0.9375rem;
+  cursor: pointer;
+}
+
+.segmented label + input + label { border-left: 1.5px solid var(--color-border); }
+
+.segmented input:checked + label {
+  background: var(--color-primary);
+  color: #fff;
+  font-weight: 600;
+}
+
+.segmented input:focus-visible + label,
+.chips input:focus-visible + label,
+.stars input:focus-visible + label {
+  outline: 3px solid var(--color-focus);
+  outline-offset: -3px;
+}
+
+/* ---------- Estrellas ---------- */
+.stars {
+  display: flex;
+  gap: var(--space-1);
+}
+
+.stars label {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  font-size: 1.6rem;
+  line-height: 1;
+  color: var(--color-border);
+  cursor: pointer;
+  transition: color 0.1s, transform 0.1s;
+}
+
+.stars label.is-filled { color: var(--color-star); }
+.stars label:hover { transform: scale(1.12); }
+
+/* ---------- Botones: una jerarquía para toda la app ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 2.75rem;
+  padding: 0 var(--space-5);
+  border: 1.5px solid transparent;
+  border-radius: var(--radius-small);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: #fff;
+}
+.btn-primary:hover { background: var(--color-primary-hover); }
+
+.btn-secondary {
+  background: transparent;
+  border-color: var(--color-border);
+}
+.btn-secondary:hover { border-color: var(--color-muted); }
+
+.btn-danger {
+  background: var(--color-danger);
+  color: #fff;
+}
+
+.btn-danger-text {
+  background: transparent;
+  color: var(--color-danger);
+}
+.btn-danger-text:hover { background: var(--color-danger-soft); }
+
+.btn-small {
+  min-height: 2.75rem;
+  padding: 0 var(--space-3);
+  font-size: 0.9375rem;
+}
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+}
+
+.form-actions .btn-primary { flex: 1 1 12rem; }
+
+/* ---------- Lista ---------- */
+.list-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.book-count { color: var(--color-muted); }
+
+.toolbar {
+  display: grid;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+}
+
+.field--compact { margin-bottom: 0; }
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.chips label {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0 var(--space-4);
+  border: 1.5px solid var(--color-border);
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 0.9375rem;
+}
+
+.chips input:checked + label {
+  background: var(--color-primary-soft);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.chips input:checked + label::before { content: "✓ "; white-space: pre; }
+
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+  gap: var(--space-4);
+}
+
+/* ---------- Card de libro (skill cards) ---------- */
+.book-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-left: 5px solid var(--status-color, var(--color-border));
+  border-radius: var(--radius-small);
+  animation: card-in 0.2s ease-out;
+}
+
+.book-card[data-status="to-read"] { --status-color: var(--status-to-read); }
+.book-card[data-status="reading"] { --status-color: var(--status-reading); }
+.book-card[data-status="finished"] { --status-color: var(--status-finished); }
+
+.book-card.is-editing {
+  box-shadow: 0 0 0 3px rgb(194 106 46 / 0.35);
+}
+
+.book-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+/* El título es el dato protagonista: el más grande y en negrita */
+.book-title {
+  min-width: 0;
+  font-family: var(--font-title);
+  font-size: 1.2rem;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.book-rating {
+  flex-shrink: 0;
+  color: var(--color-star);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.book-meta { color: var(--color-muted); }
+
+.book-status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  align-self: flex-start;
+  margin-top: var(--space-1);
+  padding: 0.15rem var(--space-3);
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--status-color);
+  background: color-mix(in srgb, var(--status-color) 12%, transparent);
+}
+
+.book-card-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-top: auto;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-border);
+}
+
+.book-date {
+  color: var(--color-muted);
+  font-size: 0.8125rem;
+}
+
+.book-actions {
+  display: flex;
+  gap: var(--space-1);
+}
+
+@keyframes card-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ---------- Estado vacío ---------- */
+.empty-state {
+  text-align: center;
+  padding: var(--space-6) var(--space-4);
+  color: var(--color-muted);
+}
+
+.empty-icon { font-size: 2.5rem; }
+
+/* ---------- Diálogo de confirmación ---------- */
+.dialog {
+  width: min(26rem, calc(100% - 2rem));
+  padding: var(--space-5);
+  border: 0;
+  border-radius: var(--radius);
+  box-shadow: 0 10px 40px rgb(0 0 0 / 0.25);
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.dialog::backdrop { background: rgb(43 33 24 / 0.45); }
+
+.dialog-title {
+  font-size: 1.2rem;
+  margin-bottom: var(--space-2);
+}
+
+.dialog-text { color: var(--color-muted); }
+
+.dialog-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--space-5) + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  width: max-content;
+  max-width: calc(100% - 2rem);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-text);
+  color: #fff;
+  border-radius: var(--radius-small);
+  box-shadow: 0 6px 24px rgb(0 0 0 / 0.25);
+  animation: card-in 0.2s ease-out;
+}
+
+.toast-action {
+  min-height: 2.75rem;
+  padding: 0 var(--space-3);
+  background: transparent;
+  border: 0;
+  color: #ffc58f;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
