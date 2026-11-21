@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Lleva el registro de los libros que lees: agrégalos, edítalos y elimínalos.">
+  <title>Mi Biblioteca</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+  <link rel="stylesheet" href="src/styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="container">
+      <h1 class="app-title"><span aria-hidden="true">📚</span> Mi Biblioteca</h1>
+      <p class="app-subtitle">Lleva el registro de lo que lees, lo que estás leyendo y lo que viene.</p>
+    </div>
+  </header>
+
+  <main class="container layout">
+    <!-- CREATE / UPDATE: el mismo formulario sirve para agregar y para editar -->
+    <section class="panel form-panel" aria-labelledby="form-title">
+      <h2 id="form-title" class="panel-title">Agregar libro</h2>
+
+      <form id="book-form" novalidate>
+        <input type="hidden" name="id">
+
+        <div class="field">
+          <input id="title" name="title" type="text" class="field-input" placeholder=" "
+                 maxlength="120" autocomplete="off" enterkeyhint="next" required
+                 aria-describedby="title-error">
+          <label for="title" class="field-label">Título</label>
+          <p id="title-error" class="field-error" hidden></p>
+        </div>
+
+        <div class="field">
+          <input id="author" name="author" type="text" class="field-input" placeholder=" "
+                 maxlength="80" autocomplete="off" enterkeyhint="next" required
+                 aria-describedby="author-error">
+          <label for="author" class="field-label">Autor o autora</label>
+          <p id="author-error" class="field-error" hidden></p>
+        </div>
+
+        <div class="field">
+          <select id="genre" name="genre" class="field-input field-select" required
+                  aria-describedby="genre-error">
+            <option value="">Elige un género</option>
+          </select>
+          <label for="genre" class="field-label field-label--floated">Género</label>
+          <p id="genre-error" class="field-error" hidden></p>
+        </div>
+
+        <fieldset class="field-group" aria-describedby="status-error">
+          <legend class="group-legend">Estado</legend>
+          <div class="segmented" id="status-options"></div>
+          <p id="status-error" class="field-error" hidden></p>
+        </fieldset>
+
+        <fieldset class="field-group" aria-describedby="rating-help rating-error">
+          <legend class="group-legend">Calificación <span class="optional">(opcional)</span></legend>
+          <div class="stars" id="rating-options"></div>
+          <p id="rating-help" class="field-help">Toca la misma estrella otra vez para quitarla.</p>
+          <p id="rating-error" class="field-error" hidden></p>
+        </fieldset>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" id="submit-button">Agregar libro</button>
+          <button type="button" class="btn btn-secondary" id="cancel-edit" hidden>Cancelar</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- READ / DELETE: lista con búsqueda, filtro y acciones por libro -->
+    <section class="panel list-panel" aria-labelledby="list-title">
+      <div class="list-header">
+        <h2 id="list-title" class="panel-title">Mis libros</h2>
+        <p id="book-count" class="book-count" aria-live="polite"></p>
+      </div>
+
+      <div class="toolbar">
+        <div class="field field--compact">
+          <input id="search" type="search" class="field-input" placeholder=" "
+                 autocomplete="off" enterkeyhint="search">
+          <label for="search" class="field-label">Buscar por título o autor</label>
+        </div>
+        <div class="chips" role="radiogroup" aria-label="Filtrar por estado" id="status-filter"></div>
+      </div>
+
+      <ul id="book-list" class="book-grid"></ul>
+
+      <div id="empty-state" class="empty-state" hidden>
+        <p class="empty-icon" aria-hidden="true">📖</p>
+        <p id="empty-message" class="empty-message"></p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Plantilla de cada card; se llena con textContent para no inyectar HTML del usuario -->
+  <template id="book-card-template">
+    <li class="book-card">
+      <div class="book-card-head">
+        <h3 class="book-title"></h3>
+        <span class="book-rating"></span>
+      </div>
+      <p class="book-meta"></p>
+      <p class="book-status"><span class="status-icon" aria-hidden="true"></span><span class="status-text"></span></p>
+      <div class="book-card-foot">
+        <p class="book-date"></p>
+        <div class="book-actions">
+          <button type="button" class="btn btn-secondary btn-small" data-action="edit">Editar</button>
+          <button type="button" class="btn btn-danger-text btn-small" data-action="delete">Eliminar</button>
+        </div>
+      </div>
+    </li>
+  </template>
+
+  <dialog id="confirm-dialog" class="dialog" aria-labelledby="confirm-title" aria-describedby="confirm-text">
+    <form method="dialog">
+      <h2 id="confirm-title" class="dialog-title">¿Eliminar este libro?</h2>
+      <p id="confirm-text" class="dialog-text"></p>
+      <div class="dialog-actions">
+        <button value="cancel" class="btn btn-secondary">Cancelar</button>
+        <button value="confirm" class="btn btn-danger">Eliminar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden>
+    <span id="toast-message"></span>
+    <button type="button" id="toast-action" class="toast-action" hidden></button>
+  </div>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
