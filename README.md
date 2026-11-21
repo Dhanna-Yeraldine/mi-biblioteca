@@ -30,7 +30,7 @@ dos pestañas, los cambios de una se ven en la otra.
 - **Node.js**: solo para servir los archivos en local (`scripts/serve.js`, sin dependencias) y correr las pruebas con
   `node:test`.
 - **IA**: Claude Code con las skills `git-workflow`, `clean-code`, `secrets-management`, `forms`, `cards` y
-  `responsive` (copiadas en [`.claude/skills/`](.claude/skills)).
+  `responsive`.
 
 ## Cómo ejecutarlo
 
